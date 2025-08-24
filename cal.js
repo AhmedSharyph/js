@@ -1,5 +1,5 @@
 // === Step 1: Inject CSS into the document head ===
-function injectStyles() {
+(function injectStyles() {
   const styles = `
     .kafihi-calendar {
       padding: 6px 10px;
