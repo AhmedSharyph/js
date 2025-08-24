@@ -37,4 +37,5 @@
   .kafihi-footer button:hover { background:#e5e7eb; }
 
   @media(max-width:400px){ .kafihi-popup{padding:8px;font-size:13px;} .kafihi-days div{padding:8px 0;} }
-</style>
+
+
