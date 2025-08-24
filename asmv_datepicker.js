@@ -1,11 +1,12 @@
 /*!
- * ASMV Datepicker
+ * ASMV Datepicker - Modified Version
  * Project: asmv_datepicker
- * Author: Ahmed Shareef
+ * Author: Ahmed Shareef (Modified)
  * Website: ahmedshayph.mv
  * GitHub: ahmedsharyph.mv
- * Version: 1.0.0
  * Created: 2025-08-24
+ * Version: 1.0.1-mod
+ * Modified: 2025-08-24 21:00
  */
 
 class asm_datepicker {
@@ -24,7 +25,7 @@ class asm_datepicker {
   }
 
   injectCSS() {
-    if (document.getElementById("asm_datepicker_css")) return; // only once
+    if (document.getElementById("asm_datepicker_css")) return;
     const style = document.createElement("style");
     style.id = "asm_datepicker_css";
     style.textContent = `
@@ -49,64 +50,33 @@ class asm_datepicker {
     this.picker = document.createElement("div");
     this.picker.className = "asm-datepicker hidden";
 
-    // Width matches input font (10ch + 5px left/right)
     const font = window.getComputedStyle(this.input).font || "14px sans-serif";
     const ctx = document.createElement("canvas").getContext("2d");
     ctx.font = font;
     const textWidth = ctx.measureText("YYYY-MM-DD").width;
     this.picker.style.width = `${textWidth + 10}px`;
 
-    // Header
     const header = document.createElement("div");
     header.className = "header";
-
-    this.prevBtn = document.createElement("button");
-    this.prevBtn.textContent = "◀";
-    this.nextBtn = document.createElement("button");
-    this.nextBtn.textContent = "▶";
-    this.monthYear = document.createElement("span");
-    this.monthYear.className = "month-year";
-
-    header.appendChild(this.prevBtn);
-    header.appendChild(this.monthYear);
-    header.appendChild(this.nextBtn);
+    this.prevBtn = document.createElement("button"); this.prevBtn.textContent = "◀";
+    this.nextBtn = document.createElement("button"); this.nextBtn.textContent = "▶";
+    this.monthYear = document.createElement("span"); this.monthYear.className = "month-year";
+    header.appendChild(this.prevBtn); header.appendChild(this.monthYear); header.appendChild(this.nextBtn);
     this.picker.appendChild(header);
 
-    // Weekdays
     const weekdays = ["Su","Mo","Tu","We","Th","Fr","Sa"];
-    const weekDiv = document.createElement("div");
-    weekDiv.className = "weekdays";
-    weekdays.forEach(d => {
-      const el = document.createElement("div");
-      el.textContent = d;
-      weekDiv.appendChild(el);
-    });
+    const weekDiv = document.createElement("div"); weekDiv.className = "weekdays";
+    weekdays.forEach(d => { const el = document.createElement("div"); el.textContent = d; weekDiv.appendChild(el); });
     this.picker.appendChild(weekDiv);
 
-    // Days
-    this.daysGrid = document.createElement("div");
-    this.daysGrid.className = "days";
+    this.daysGrid = document.createElement("div"); this.daysGrid.className = "days";
     this.picker.appendChild(this.daysGrid);
 
-    // Footer
-    const footer = document.createElement("div");
-    footer.className = "footer";
-
-    this.clearBtn = document.createElement("button");
-    this.clearBtn.textContent = "Clear";
-    this.clearBtn.className = "clear";
-
-    this.todayBtn = document.createElement("button");
-    this.todayBtn.textContent = "Today";
-    this.todayBtn.className = "today";
-
-    this.closeBtn = document.createElement("button");
-    this.closeBtn.textContent = "Close";
-    this.closeBtn.className = "close";
-
-    footer.appendChild(this.clearBtn);
-    footer.appendChild(this.todayBtn);
-    footer.appendChild(this.closeBtn);
+    const footer = document.createElement("div"); footer.className = "footer";
+    this.clearBtn = document.createElement("button"); this.clearBtn.textContent = "Clear"; this.clearBtn.className="clear";
+    this.todayBtn = document.createElement("button"); this.todayBtn.textContent = "Today"; this.todayBtn.className="today";
+    this.closeBtn = document.createElement("button"); this.closeBtn.textContent = "Close"; this.closeBtn.className="close";
+    footer.appendChild(this.clearBtn); footer.appendChild(this.todayBtn); footer.appendChild(this.closeBtn);
     this.picker.appendChild(footer);
 
     document.body.appendChild(this.picker);
@@ -120,9 +90,7 @@ class asm_datepicker {
     this.clearBtn.addEventListener("click", () => { this.input.value=""; this.selectedDate=null; });
     this.todayBtn.addEventListener("click", () => { this.selectDate(this.today); });
     this.closeBtn.addEventListener("click", () => this.hide());
-    document.addEventListener("click", e => {
-      if(!this.picker.contains(e.target) && e.target!==this.input) this.hide();
-    });
+    document.addEventListener("click", e => { if(!this.picker.contains(e.target) && e.target!==this.input) this.hide(); });
   }
 
   show() {
@@ -135,13 +103,10 @@ class asm_datepicker {
   hide() { this.picker.classList.add("hidden"); }
 
   changeMonth(delta) {
-    let m = this.currentMonth + delta;
-    let y = this.currentYear;
-    if(m<0){ m=11; y--; }
-    if(m>11){ m=0; y++; }
+    let m = this.currentMonth + delta; let y = this.currentYear;
+    if(m<0){ m=11; y--; } if(m>11){ m=0; y++; }
     if(this.yearLimitCurrent && y>this.today.getFullYear()) return;
-    this.currentMonth = m;
-    this.currentYear = y;
+    this.currentMonth = m; this.currentYear = y;
     this.renderCalendar();
   }
 
@@ -149,30 +114,15 @@ class asm_datepicker {
     const firstDay = new Date(this.currentYear,this.currentMonth,1).getDay();
     const daysInMonth = new Date(this.currentYear,this.currentMonth+1,0).getDate();
     this.monthYear.textContent = `${this.currentYear}-${String(this.currentMonth+1).padStart(2,'0')}`;
-
     this.daysGrid.innerHTML = "";
-    for(let i=0;i<firstDay;i++){
-      const empty = document.createElement("div");
-      this.daysGrid.appendChild(empty);
-    }
+    for(let i=0;i<firstDay;i++){ this.daysGrid.appendChild(document.createElement("div")); }
     for(let d=1;d<=daysInMonth;d++){
-      const dayEl = document.createElement("div");
-      dayEl.textContent = d;
+      const dayEl = document.createElement("div"); dayEl.textContent=d;
       const dateObj = new Date(this.currentYear,this.currentMonth,d);
-
-      // Highlight today
       if(dateObj.toDateString()===this.today.toDateString()) dayEl.classList.add("today");
-
-      // Disable weekends
       if(this.weekendsDisabled && (dateObj.getDay()===5 || dateObj.getDay()===6)) dayEl.classList.add("disabled");
-
-      // Disable future if yearLimitCurrent
       if(this.yearLimitCurrent && dateObj>this.today) dayEl.classList.add("disabled");
-
-      dayEl.addEventListener("click", () => {
-        if(dayEl.classList.contains("disabled")) return;
-        this.selectDate(dateObj);
-      });
+      dayEl.addEventListener("click", () => { if(!dayEl.classList.contains("disabled")) this.selectDate(dateObj); });
       this.daysGrid.appendChild(dayEl);
     }
   }
@@ -187,5 +137,17 @@ class asm_datepicker {
   }
 }
 
-// Initialize datepickers
-document.querySelectorAll(".asmv_datepicker").forEach(input => new asm_datepicker(input));
+// 🔹 Modified initialization to handle hidden inputs (toggle-proof)
+document.querySelectorAll(".asmv_datepicker").forEach(input => {
+  if(input.offsetParent===null){ // hidden input
+    const observer = new MutationObserver(() => {
+      if(input.offsetParent!==null){
+        observer.disconnect();
+        new asm_datepicker(input);
+      }
+    });
+    observer.observe(document.body, { attributes:true, subtree:true });
+  } else {
+    new asm_datepicker(input);
+  }
+});
