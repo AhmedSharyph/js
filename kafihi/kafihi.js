@@ -1,114 +1,171 @@
-function KafihiCalendar(input, options = {}) {
-  const popup = document.createElement("div");
-  popup.className = "kafihi-popup";
-  document.body.appendChild(popup);
+(function(){
+  function createKafihiCalendar(input){
+    const popup = document.createElement("div");
+    popup.className="kafihi-popup";
+    document.body.appendChild(popup);
 
-  const today = new Date();
-  let currentDate = new Date(today);
+    let selectedDate = null;
+    let today=new Date();
+    let currentMonth=today.getMonth();
+    let currentYear=today.getFullYear();
 
-  const disableFuture = options.disableFuture || false;
-  const disablePast = options.disablePast || false;
+    const disableFuture = input.dataset.disableFuture === "true";
+    const disablePast = input.dataset.disablePast === "true";
 
-  function isSameDay(a, b) {
-    return a.getFullYear() === b.getFullYear() &&
-           a.getMonth() === b.getMonth() &&
-           a.getDate() === b.getDate();
-  }
-
-  function renderCalendar() {
-    popup.innerHTML = "";
-
-    const header = document.createElement("div");
-    header.className = "kafihi-header";
-
-    // Month controls (with arrows)
-    const monthControls = document.createElement("div");
-    monthControls.className = "kafihi-month-controls";
-
-    const prevBtn = document.createElement("button");
-    prevBtn.textContent = "‹";
-    prevBtn.addEventListener("click", () => {
-      currentDate.setMonth(currentDate.getMonth() - 1);
-      renderCalendar();
-    });
-
-    const monthLabel = document.createElement("span");
-    monthLabel.textContent = currentDate.toLocaleString("default", { month: "long" });
-
-    const nextBtn = document.createElement("button");
-    nextBtn.textContent = "›";
-    nextBtn.addEventListener("click", () => {
-      currentDate.setMonth(currentDate.getMonth() + 1);
-      renderCalendar();
-    });
-
-    monthControls.appendChild(prevBtn);
-    monthControls.appendChild(monthLabel);
-    monthControls.appendChild(nextBtn);
-
-    // Year fixed at right
-    const yearLabel = document.createElement("span");
-    yearLabel.className = "kafihi-year";
-    yearLabel.textContent = currentDate.getFullYear();
-
-    header.appendChild(monthControls);
-    header.appendChild(yearLabel);
-
-    const weekdays = document.createElement("div");
-    weekdays.className = "kafihi-weekdays";
-    ["Su","Mo","Tu","We","Th","Fr","Sa"].forEach(d => {
-      const div = document.createElement("div");
-      div.textContent = d;
-      weekdays.appendChild(div);
-    });
-
-    const days = document.createElement("div");
-    days.className = "kafihi-days";
-
-    const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0);
-
-    for (let i=0; i<firstDay.getDay(); i++) {
-      days.appendChild(document.createElement("div"));
+    function toGMTPlus5(date){ return new Date(date.getTime() + 5*60*60*1000); }
+    function formatDate(date){ 
+      if(!date) return "";
+      const gmt5=toGMTPlus5(date);
+      const yyyy=gmt5.getFullYear();
+      const mm=String(gmt5.getMonth()+1).padStart(2,"0");
+      const dd=String(gmt5.getDate()).padStart(2,"0");
+      return `${yyyy}-${mm}-${dd}`;
     }
 
-    for (let d=1; d<=lastDay.getDate(); d++) {
-      const dateObj = new Date(currentDate.getFullYear(), currentDate.getMonth(), d);
-      const dayDiv = document.createElement("div");
-      dayDiv.textContent = d;
+    function renderCalendar(){
+      popup.innerHTML="";
 
-      if (isSameDay(dateObj, today)) dayDiv.classList.add("today");
-      if (isSameDay(dateObj, new Date(input.value))) dayDiv.classList.add("selected");
+      // HEADER
+      const header=document.createElement("div"); 
+      header.className="kafihi-header";
 
-      if ((disableFuture && dateObj > today && !isSameDay(dateObj, today)) ||
-          (disablePast && dateObj < today && !isSameDay(dateObj, today))) {
-        dayDiv.classList.add("disabled");
-      } else {
-        dayDiv.addEventListener("click", () => {
-          input.value = dateObj.toISOString().split("T")[0];
-          popup.style.display = "none";
-        });
+      const prevBtn=document.createElement("button"); 
+      prevBtn.textContent="◀";
+      const nextBtn=document.createElement("button"); 
+      nextBtn.textContent="▶";
+
+      // Month dropdown
+      const monthSelect=document.createElement("select");
+      for(let m=0;m<12;m++){ 
+        const opt=document.createElement("option"); 
+        opt.value=m; 
+        opt.textContent=new Date(0,m).toLocaleString('default',{month:'short'}); 
+        if(m===currentMonth) opt.selected=true;
+        monthSelect.appendChild(opt);
       }
-      days.appendChild(dayDiv);
+
+      // Year dropdown
+      const yearSelect=document.createElement("select");
+      for(let y=today.getFullYear()-100;y<=today.getFullYear()+10;y++){ 
+        const opt=document.createElement("option"); 
+        opt.value=y; 
+        opt.textContent=y; 
+        if(y===currentYear) opt.selected=true; 
+        yearSelect.appendChild(opt);
+      }
+
+      // Group arrows + month
+      const monthGroup=document.createElement("div");
+      monthGroup.style.display="flex";
+      monthGroup.style.alignItems="center";
+      monthGroup.style.gap="4px";
+      monthGroup.appendChild(prevBtn);
+      monthGroup.appendChild(monthSelect);
+      monthGroup.appendChild(nextBtn);
+
+      header.style.justifyContent="space-between";
+      header.appendChild(monthGroup);
+      header.appendChild(yearSelect);
+      popup.appendChild(header);
+
+      // WEEKDAYS
+      const weekdays=["Su","Mo","Tu","We","Th","Fr","Sa"];
+      const weekDiv=document.createElement("div"); 
+      weekDiv.className="kafihi-weekdays";
+      weekdays.forEach((d,i)=>{ 
+        const el=document.createElement("div"); 
+        el.textContent=d; 
+        if(i===5||i===6) el.style.color="#ef4444"; 
+        weekDiv.appendChild(el); 
+      });
+      popup.appendChild(weekDiv);
+
+      // DAYS
+      const daysDiv=document.createElement("div"); 
+      daysDiv.className="kafihi-days";
+      const firstDay=new Date(currentYear,currentMonth,1).getDay();
+      const daysInMonth=new Date(currentYear,currentMonth+1,0).getDate();
+      for(let i=0;i<firstDay;i++) daysDiv.appendChild(document.createElement("div"));
+
+      for(let d=1;d<=daysInMonth;d++){
+        const dayEl=document.createElement("div"); 
+        dayEl.textContent=d;
+        const dateObj=new Date(currentYear,currentMonth,d);
+
+        if(dateObj.toDateString()===today.toDateString()) dayEl.classList.add("today");
+        if(dateObj.getDay()===5||dateObj.getDay()===6) dayEl.classList.add("weekend");
+
+        let disabled=false;
+        if(disableFuture && dateObj>today) disabled=true;
+        if(disablePast && dateObj<today) disabled=true;
+
+        if(disabled){ 
+          dayEl.classList.add("disabled"); 
+        } else { 
+          dayEl.addEventListener("click",()=>{
+            selectedDate=dateObj; 
+            input.value=formatDate(selectedDate); 
+            popup.style.display="none"; 
+          }); 
+        }
+        daysDiv.appendChild(dayEl);
+      }
+      popup.appendChild(daysDiv);
+
+      // FOOTER
+      const footer=document.createElement("div"); 
+      footer.className="kafihi-footer";
+
+      const clearBtn=document.createElement("button"); clearBtn.textContent="Clear";
+      const todayBtn=document.createElement("button"); todayBtn.textContent="Today";
+      const closeBtn=document.createElement("button"); closeBtn.textContent="Close";
+
+      clearBtn.addEventListener("click",()=>{ selectedDate=null; input.value=""; });
+      todayBtn.addEventListener("click",()=>{
+        selectedDate=new Date();
+        if(disableFuture && selectedDate>today) return;
+        if(disablePast && selectedDate<today) return;
+        input.value=formatDate(selectedDate); renderCalendar();
+      });
+      closeBtn.addEventListener("click",()=>{ popup.style.display="none"; });
+
+      footer.appendChild(clearBtn); 
+      footer.appendChild(todayBtn); 
+      footer.appendChild(closeBtn);
+      popup.appendChild(footer);
+
+      // NAVIGATION
+      prevBtn.addEventListener("click",()=>{ 
+        currentMonth--; 
+        if(currentMonth<0){currentMonth=11;currentYear--;} 
+        renderCalendar(); 
+      });
+      nextBtn.addEventListener("click",()=>{ 
+        currentMonth++; 
+        if(currentMonth>11){currentMonth=0;currentYear++;} 
+        renderCalendar(); 
+      });
+      monthSelect.addEventListener("change",()=>{ 
+        currentMonth=parseInt(monthSelect.value); renderCalendar(); 
+      });
+      yearSelect.addEventListener("change",()=>{ 
+        currentYear=parseInt(yearSelect.value); renderCalendar(); 
+      });
     }
 
-    popup.appendChild(header);
-    popup.appendChild(weekdays);
-    popup.appendChild(days);
+    function showPopup(){
+      popup.style.display="block";
+      const rect=input.getBoundingClientRect();
+      popup.style.top=rect.bottom+window.scrollY+"px";
+      popup.style.left=rect.left+window.scrollX+"px";
+      renderCalendar();
+    }
+
+    input.addEventListener("focus",showPopup);
+    document.addEventListener("click",(e)=>{ 
+      if(!popup.contains(e.target) && e.target!==input) popup.style.display="none"; 
+    });
   }
 
-  input.addEventListener("click", (e) => {
-    const rect = input.getBoundingClientRect();
-    popup.style.top = rect.bottom + window.scrollY + "px";
-    popup.style.left = rect.left + window.scrollX + "px";
-    popup.style.display = "block";
-    renderCalendar();
-    e.stopPropagation();
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!popup.contains(e.target) && e.target !== input) {
-      popup.style.display = "none";
-    }
-  });
-}
+  document.querySelectorAll(".kafihi-calendar").forEach(input=>createKafihiCalendar(input));
+})();
