@@ -5,92 +5,47 @@
  * Website: ahmedshayph.mv
  * GitHub: ahmedsharyph.mv
  * Created: 2025-08-24
- * Version: 1.0.1-mod
- * Modified: 2025-08-24 21:00
+ * Version: 1.1.0-mod
+ * Modified: 2025-08-24 23:00
  */
 
-// ---------------- Inject CSS ----------------
-const style = document.createElement("style");
-style.textContent = `
+const style=document.createElement("style");
+style.textContent=`
 .asm-datepicker {
-  position: absolute;
-  z-index: 1000;
-  background: #fff;
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-  font-family: "Segoe UI", Roboto, sans-serif;
-  font-size: 14px;
-  width: auto;
-  max-width: 95vw;
-  box-sizing: border-box;
+  position:absolute !important;
+  z-index:9999 !important;
+  background:#fff !important;
+  border-radius:12px !important;
+  padding:12px !important;
+  box-shadow:0 6px 20px rgba(0,0,0,0.15) !important;
+  font-family:"Segoe UI", Roboto, sans-serif !important;
+  font-size:14px !important;
+  line-height:1.4 !important;
+  letter-spacing:0 !important;
+  width:auto !important;
+  max-width:95vw !important;
+  box-sizing:border-box !important;
 }
-.asm-datepicker .header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
-  color: #333;
-}
-.asm-datepicker .header button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: #6b7280;
-  transition: color 0.2s;
-}
-.asm-datepicker .header button:hover { color: #1f2937; }
-.asm-datepicker select {
-  font-size: 14px;
-  padding: 4px 6px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
-.asm-datepicker select:hover { border-color: #3b82f6; }
-.asm-datepicker .weekdays,
-.asm-datepicker .days {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(30px,1fr));
-  text-align: center;
-  gap: 4px;
-}
-.asm-datepicker .weekdays div { font-weight: 600; font-size: 12px; }
-.asm-datepicker .days div {
-  cursor: pointer;
-  border-radius: 8px;
-  padding: 6px 0;
-  transition: background 0.2s, color 0.2s;
-  aspect-ratio: 1 / 1;
-}
-.asm-datepicker .days div:hover:not(.disabled) { background: #3b82f6; color: #fff; }
-.asm-datepicker .days div.today { background: #bfdbfe; font-weight: 600; }
-.asm-datepicker .days div.disabled { color: #d1d5db; cursor: not-allowed; }
-.asm-datepicker .days div.weekend { color: #ef4444; }
-.asm-datepicker .footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-}
-.asm-datepicker .footer button {
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  background: #f3f4f6;
-  transition: background 0.2s;
-}
-.asm-datepicker .footer button:hover { background: #e5e7eb; }
-.hidden { display: none !important; }
-@media(max-width: 400px){
-  .asm-datepicker { padding: 8px; font-size: 13px; }
-  .asm-datepicker .days div { font-size: 14px; padding: 8px 0; }
-  .asm-datepicker .header, .asm-datepicker .footer { flex-wrap: wrap; gap: 4px; }
+.asm-datepicker .header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:6px; margin-bottom:6px; color:#333 !important; }
+.asm-datepicker .header button { background:none !important; border:none !important; cursor:pointer !important; font-size:18px !important; color:#6b7280 !important; transition:color 0.2s !important; }
+.asm-datepicker .header button:hover { color:#1f2937 !important; }
+.asm-datepicker select { font-size:14px !important; padding:4px 6px !important; border-radius:6px !important; border:1px solid #d1d5db !important; cursor:pointer !important; transition:border-color 0.2s !important; background:#fff !important; }
+.asm-datepicker select:hover { border-color:#3b82f6 !important; }
+.asm-datepicker .weekdays, .asm-datepicker .days { display:grid !important; grid-template-columns:repeat(7,minmax(30px,1fr)) !important; text-align:center !important; gap:4px !important; }
+.asm-datepicker .weekdays div { font-weight:600 !important; font-size:12px !important; }
+.asm-datepicker .days div { cursor:pointer !important; border-radius:8px !important; padding:6px 0 !important; transition:background 0.2s,color 0.2s !important; aspect-ratio:1/1 !important; }
+.asm-datepicker .days div:hover:not(.disabled) { background:#3b82f6 !important; color:#fff !important; }
+.asm-datepicker .days div.today { background:#bfdbfe !important; font-weight:600 !important; }
+.asm-datepicker .days div.disabled { color:#d1d5db !important; cursor:not-allowed !important; }
+.asm-datepicker .days div.weekend { color:#ef4444 !important; }
+.asm-datepicker .footer { display:flex !important; justify-content:space-between !important; margin-top:8px !important; }
+.asm-datepicker .footer button { font-size:12px !important; padding:6px 10px !important; border-radius:6px !important; border:none !important; cursor:pointer !important; background:#f3f4f6 !important; transition:background 0.2s !important; }
+.asm-datepicker .footer button:hover { background:#e5e7eb !important; }
+.hidden { display:none !important; }
+@media(max-width:400px){
+  .asm-datepicker { padding:8px !important; font-size:13px !important; }
+  .asm-datepicker .days div { font-size:14px !important; padding:8px 0 !important; }
+  .asm-datepicker .header, .asm-datepicker .footer { flex-wrap:wrap; gap:4px !important; }
 }
 `;
 document.head.appendChild(style);
@@ -98,13 +53,13 @@ document.head.appendChild(style);
 // ---------------- Datepicker Class ----------------
 class asm_datepicker {
   constructor(input){
-    this.input = input;
-    this.selectedDate = null;
-    this.today = new Date();
-    this.currentMonth = this.today.getMonth();
-    this.currentYear = this.today.getFullYear();
-    this.yearLimitCurrent = input.dataset.yearLimit==="current";
-    this.weekendsDisabled = input.dataset.weekendsDisabled==="true";
+    this.input=input;
+    this.selectedDate=null;
+    this.today=new Date();
+    this.currentMonth=this.today.getMonth();
+    this.currentYear=this.today.getFullYear();
+    this.yearLimitCurrent=input.dataset.yearLimit==="current";
+    this.weekendsDisabled=input.dataset.weekendsDisabled==="true";
     this.buildPicker();
     this.bindEvents();
   }
@@ -113,7 +68,6 @@ class asm_datepicker {
     this.picker=document.createElement("div");
     this.picker.className="asm-datepicker hidden";
 
-    // Header
     const header=document.createElement("div"); header.className="header";
     this.prevBtn=document.createElement("button"); this.prevBtn.textContent="◀";
     this.nextBtn=document.createElement("button"); this.nextBtn.textContent="▶";
@@ -145,8 +99,8 @@ class asm_datepicker {
     const weekdays=["Su","Mo","Tu","We","Th","Fr","Sa"];
     const weekDiv=document.createElement("div"); weekDiv.className="weekdays";
     weekdays.forEach((d,i)=>{
-      const el = document.createElement("div"); el.textContent=d;
-      if(i===5 || i===6) el.style.color="#ef4444"; // Friday/Saturday red
+      const el=document.createElement("div"); el.textContent=d;
+      if(i===5||i===6) el.style.color="#ef4444";
       weekDiv.appendChild(el);
     });
     this.picker.appendChild(weekDiv);
@@ -229,9 +183,25 @@ class asm_datepicker {
   }
 }
 
-// ---------------- Initialize all datepickers ----------------
+// ---------------- Initialize datepickers with hidden-input support ----------------
+function initDatepickerWhenVisible(input){
+  if(input.offsetParent!==null){
+    new asm_datepicker(input);
+  } else {
+    const observer=new MutationObserver(()=>{
+      if(input.offsetParent!==null){
+        observer.disconnect();
+        new asm_datepicker(input);
+      }
+    });
+    observer.observe(input,{attributes:true,attributeFilter:['style','class']});
+  }
+}
+
 document.addEventListener("DOMContentLoaded",()=>{
   document.querySelectorAll(".asmv_datepicker").forEach(input=>{
-    new asm_datepicker(input);
+    initDatepickerWhenVisible(input);
   });
 });
+
+
