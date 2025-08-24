@@ -1,132 +1,81 @@
-/* Input field */
-.kafihi-calendar {
-  padding: 6px 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
-  width: 140px;
-  min-width: 130px;
-  margin: 5px;
-  font-family: "Segoe UI", Roboto, sans-serif;
-  cursor: pointer;
-}
-
-/* Popup */
+/* Kafihi Calendar Styles */
 .kafihi-popup {
   position: absolute;
   background: #fff;
-  border-radius: 10px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   padding: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  font-family: "Segoe UI", Roboto, sans-serif;
   z-index: 1000;
   display: none;
-  max-width: 95vw;
   width: 280px;
-  box-sizing: border-box;
+  font-family: sans-serif;
 }
 
-/* Header */
 .kafihi-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
-  gap: 4px;
+  margin-bottom: 10px;
 }
 
-.kafihi-header button {
-  cursor: pointer;
+/* Month controls */
+.kafihi-month-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kafihi-month-controls button {
   background: none;
   border: none;
   font-size: 18px;
-  color: #6b7280;
-  transition: color 0.2s;
-}
-.kafihi-header button:hover { color: #1f2937; }
-
-.kafihi-header select {
+  cursor: pointer;
   padding: 4px 6px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  background: #fff;
 }
 
-/* Weekdays */
-.kafihi-weekdays {
+.kafihi-month-controls button:hover {
+  color: #2563eb;
+}
+
+.kafihi-year {
+  margin-left: auto;
+}
+
+.kafihi-weekdays, .kafihi-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 4px;
+  text-align: center;
 }
+
 .kafihi-weekdays div {
-  font-weight: 600;
-  font-size: 12px;
-  color: #374151;
-  text-align: center;
-}
-.kafihi-weekdays div.weekend { color: #ef4444; }
-
-/* Days */
-.kafihi-days {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  text-align: center;
-}
-.kafihi-days div {
-  cursor: pointer;
-  border-radius: 6px;
+  font-weight: bold;
   padding: 6px 0;
-  transition: all 0.2s ease;
-  aspect-ratio: 1 / 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #111;
 }
-.kafihi-days div:hover:not(.disabled) {
-  background: #3b82f6;
-  color: #fff;
+
+.kafihi-days div {
+  padding: 8px;
+  margin: 2px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
-.kafihi-days div.today {
-  background: #bfdbfe;
-  font-weight: 600;
-  border: 2px solid #3b82f6;
+
+.kafihi-days div:hover {
+  background: #e0e7ff;
 }
+
 .kafihi-days div.disabled {
   color: #d1d5db;
   cursor: not-allowed;
   pointer-events: none;
 }
-.kafihi-days div.weekend { color: #ef4444; }
 
-/* Footer */
-.kafihi-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  gap: 5px;
-}
-.kafihi-footer button {
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  background: #f3f4f6;
-  color: #333;
-}
-.kafihi-footer button:hover {
-  background: #e5e7eb;
+.kafihi-days div.today {
+  border: 1px solid #2563eb;
 }
 
-/* Responsive */
-@media (max-width: 400px) {
-  .kafihi-popup { width: 260px; padding: 8px; font-size: 13px; }
-  .kafihi-calendar { width: 130px; }
-  .kafihi-days div { padding: 8px 0; }
+.kafihi-days div.selected {
+  background: #2563eb;
+  color: #fff;
 }
